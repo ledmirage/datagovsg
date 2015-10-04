@@ -17,6 +17,31 @@ Via Composer
 $ composer require ledmirage/datagovsg
 ```
 
+in config/app.php, add this
+
+``` php
+    Ledmirage\Datagovsg\DatagovsgServiceProvider::class,
+```
+
+## Publish config
+
+Run:
+
+``` php
+    php artisan vendor:publish
+```
+
+## Configuration
+
+After publish, you have this config/datagovsg.php file, open and update the API key, eg:
+
+``` php
+    'nea-key' => 'AABBCCDDEEFFGGHHIIJJKKLLMMNNOOPPQQ',
+```
+
+You need to go to different gov.sg site to get different key.
+
+
 ## Usage
 
 ``` php
@@ -24,9 +49,6 @@ $ composer require ledmirage/datagovsg
     dd(json_decode($nea_obj->psiFetchJson ()));
 ```
 
-## Change log
-
-Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
 
 ## Testing
 
@@ -44,8 +66,8 @@ If you discover any security related issues, please email xieer86@gmail.com inst
 
 ## Credits
 
-- [xieer][link-author]
-- [All Contributors][link-contributors]
+- xieer86@gmail.com
+
 
 ## License
 

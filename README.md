@@ -27,8 +27,8 @@ in config/app.php, add this
 
 Run:
 
-``` php
-    php artisan vendor:publish
+``` bash
+$ php artisan vendor:publish
 ```
 
 ## Configuration

@@ -26,6 +26,6 @@ class DatagovsgServiceProvider extends ServiceProvider
     public function register()
     {
         //
-        $this->app->make('Ledmirage\Datagovsg\Nea');
+        // $this->app->make('Ledmirage\Datagovsg\Nea');
     }
 }

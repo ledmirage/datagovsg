@@ -49,6 +49,38 @@ class Nea
         $this->base_url['pm2.5_update'] = "http://www.nea.gov.sg/api/WebAPI?dataset=pm2.5_update&keyref=";
 
 
+        // the follow codes will create these functions
+
+        // these return guzzle response object
+        // nowcastFetch
+        // forecast12HrsFetch
+        // outlook3DaysFetch
+        // heaveyRainwarningFetch
+        // uviFetch
+        // earthquakeFetch
+        // psiFetch
+        // pm25UpdateFetch
+
+        // these return simplexml object
+        // nowcastFetchXml
+        // forecast12HrsFetchXml
+        // outlook3DaysFetchXml
+        // heaveyRainwarningFetchXml
+        // uviFetchXml
+        // earthquakeFetchXml
+        // psiFetchXml
+        // pm25UpdateFetchXml
+
+        // these return json string
+        // nowcastFetchJson
+        // forecast12HrsFetchJson
+        // outlook3DaysFetchJson
+        // heaveyRainwarningFetchJson
+        // uviFetchJson
+        // earthquakeFetchJson
+        // psiFetchJson
+        // pm25UpdateFetchJson
+
         $api_type_to_function_mapping['nowcast'] = "nowcast";
         $api_type_to_function_mapping['12hrs_forecast'] = "forecast12Hrs";
         $api_type_to_function_mapping['3days_outlook'] = "outlook3Days";
@@ -77,9 +109,7 @@ class Nea
                 return ($json);
             }, $this, get_class());
 
-            // echo "{$function_name}, {$function_name_xml}, {$function_name_json}<br/>\n";
         }
-        // dd ($this);
     }
 
     /**
@@ -87,7 +117,7 @@ class Nea
      * @param string $method
      * @param array $args
      *
-     * @return depends on which method is calld
+     * @return depends on which method is called
      */
 
     function __call($method, $args) {

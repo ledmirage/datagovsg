@@ -61,8 +61,6 @@ class Nea
                 throw new Exception("Unknown api type - {$api_type}");
             }
 
-            dd($qpi_type);
-
             $query_url = $this->base_url[$api_type] . $this->api_key;
             $response = $this->http_client->get($query_url);
             $http_status = $response->getStatusCode();

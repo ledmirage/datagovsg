@@ -1,11 +1,11 @@
 {
     "name": "ledmirage/datagovsg",
-    "description": ":package_description",
+    "description": "Interface to data.gov.sg API as a Laravel 5 package",
     "keywords": [
         "ledmirage",
         "datagovsg"
     ],
-    "homepage": "https://github.com/thephpledmirage/datagovsg",
+    "homepage": "https://github.com/ledmirage/datagovsg",
     "license": "MIT",
     "authors": [
         {

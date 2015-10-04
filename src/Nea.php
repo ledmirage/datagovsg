@@ -12,6 +12,7 @@ class Nea
     private $api_key;
     private $base_url;
     private $http_client;
+    private $methods;
 
     public function __construct()
     {
@@ -21,6 +22,8 @@ class Nea
         $this->http_client = new \GuzzleHttp\Client();
 
         $this->base_url = array();
+        $this->methods = array();
+
         // Nowcast
         $this->base_url['nowcast'] = "http://www.nea.gov.sg/api/WebAPI?dataset=nowcast&keyref=";
 
@@ -45,6 +48,53 @@ class Nea
         // PM 2.5 Update
         $this->base_url['pm2.5_update'] = "http://www.nea.gov.sg/api/WebAPI?dataset=pm2.5_update&keyref=";
 
+
+        $api_type_to_function_mapping['nowcast'] = "nowcast";
+        $api_type_to_function_mapping['12hrs_forecast'] = "forecast12Hrs";
+        $api_type_to_function_mapping['3days_outlook'] = "outlook3Days";
+        $api_type_to_function_mapping['heavy_rain_warning'] = "heavyRainWarning";
+        $api_type_to_function_mapping['uvi'] = "uvi";
+        $api_type_to_function_mapping['earthquake'] = "earthquake";
+        $api_type_to_function_mapping['psi_update'] = "psi";
+        $api_type_to_function_mapping['pm2.5_update'] = "pm25Update";
+
+        foreach ($api_type_to_function_mapping as $type=>$function_name) {
+
+            $function_name = $function_name . "Fetch";
+            $this->methods[$function_name] = \Closure::bind(function() use($type){
+                return $this->Fetch($type);
+            }, $this, get_class());
+
+            $function_name_xml = $function_name . "Xml";
+            $this->methods[$function_name_xml] = \Closure::bind(function() use($type){
+                $simpleXml = simplexml_load_string($this->Fetch($type)->getContents());
+                return ($simpleXml);
+            }, $this, get_class());
+
+            $function_name_json = $function_name . "Json";
+            $this->methods[$function_name_json] = \Closure::bind(function() use($type){
+                $json = json_encode(simplexml_load_string($this->Fetch($type)->getContents()));
+                return ($json);
+            }, $this, get_class());
+
+            // echo "{$function_name}, {$function_name_xml}, {$function_name_json}<br/>\n";
+        }
+        // dd ($this);
+    }
+
+    /**
+     *
+     * @param string $method
+     * @param array $args
+     *
+     * @return depends on which method is calld
+     */
+
+    function __call($method, $args) {
+          if(is_callable($this->methods[$method]))
+          {
+            return call_user_func_array($this->methods[$method], $args);
+          }
     }
 
     /**
@@ -79,40 +129,4 @@ class Nea
         return null;
     }
 
-    /**
-     *
-     * @param none
-     *
-     * @return PSI data as Guzzle respone object
-     */
-    public function psiFetch()
-    {
-        return $this->Fetch('psi_update');
-    }
-
-    /**
-     *
-     * @param none
-     *
-     * @return PSI data in XML object
-     */
-
-    public function psiFetchXml()
-    {
-        $simpleXml = simplexml_load_string($this->psiFetch()->getContents());
-        return ($simpleXml);
-    }
-
-    /**
-     *
-     * @param none
-     *
-     * @return PSI data in Json string
-     */
-
-    public function psiFetchJson()
-    {
-        $json = json_encode($this->psiFetchXml());
-        return ($json);
-    }
 }

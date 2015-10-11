@@ -87,16 +87,18 @@ class Lta
      * @param  string $type        response format, json or xml
      * @return Psr\Http\Message\StreamInterface $bodyObject
      */
-    public function busArrival($bus_stop_id, $service_no = "", $type='json')
+    public function busArrival($bus_stop_id, $service_no = "", $type = 'json')
     {
         $request = $this->prepare_request(
             'bus_arrival',
             [
                 'BusStopID'=>$bus_stop_id,
                 'ServiceNo'=>$service_no,
-            ], $type);
+            ],
+            $type
+        );
 
-        $response = $this->http_client->send ($request);
+        $response = $this->http_client->send($request);
         return $response->getBody();
     }
 
@@ -108,7 +110,7 @@ class Lta
      */
     public function busArrivalJson($bus_stop_id, $service_no = "")
     {
-        return $this->busArrival ($bus_stop_id, $service_no, "json")->getContents();
+        return $this->busArrival($bus_stop_id, $service_no, "json")->getContents();
     }
 
     /**
@@ -120,7 +122,59 @@ class Lta
     public function busArrivalXml($bus_stop_id, $service_no = "")
     {
         return simplexml_load_string(
-            $this->busArrival ($bus_stop_id, $service_no, "xml")->getContents()
+            $this->busArrival($bus_stop_id, $service_no, "xml")->getContents()
+        );
+    }
+
+    /**
+     * API that returns Bus Arrival information for Bus Services at a queried Bus Stop,
+     * including: Estimated Time of Arrival, Load info (i.e. how crowded the bus is), and
+     * if the bus is wheel-chair accessible (WAB).
+     * @param  int $page        $page number, 1 page = 50 records, first page = 0
+     * @param  string $type     response format, json or xml
+     * @return Psr\Http\Message\StreamInterface $bodyObject
+     */
+    public function busRouteSBS($page, $type = 'json')
+    {
+        if (!is_numeric($page)) {
+            $page=0;
+        }
+
+        $skip = $page * 50;
+
+        $request = $this->prepare_request(
+            'bus_routes_sbs',
+            [
+                '$skip' => $skip,
+            ],
+            $type
+        );
+
+        // dd ($request);
+
+        $response = $this->http_client->send($request);
+        return $response->getBody();
+    }
+
+    /**
+     * return busRouteSBS in Json format
+     * @param  int $page        $page number, 1 page = 50 records, first page = 0
+     * @return json encoded $object
+     */
+    public function busRouteSBSJson($page = 0)
+    {
+        return $this->busRouteSBS($page, "json")->getContents();
+    }
+
+    /**
+     * return busRouteSBS in XML format
+     * @param  int $page        $page number, 1 page = 50 records, first page = 0
+     * @return simpleXML $object
+     */
+    public function busRouteSBSXml($page = 0)
+    {
+        return simplexml_load_string(
+            $this->busRouteSBS($page, "xml")->getContents()
         );
     }
 }

@@ -27,8 +27,8 @@ class Lta
         $this->base_url['bus_arrival']            = "http://datamall2.mytransport.sg/ltaodataservice/BusArrival";
         $this->base_url['bus_routes_sbs']         = "http://datamall.mytransport.sg/ltaodataservice.svc/SBSTRouteSet";
         $this->base_url['bus_routes_smrt']        = "http://datamall.mytransport.sg/ltaodataservice.svc/SMRTRouteSet";
-        $this->base_url['bus_info_sbst']          = "http://datamall.mytransport.sg/ltaodataservice.svc/SBSTInfoSet";
-        $this->base_url['bus_info_sbst']          = "http://datamall.mytransport.sg/ltaodataservice.svc/SMRTInfoSet";
+        $this->base_url['bus_info_sbs']           = "http://datamall.mytransport.sg/ltaodataservice.svc/SBSTInfoSet";
+        $this->base_url['bus_info_smrt']          = "http://datamall.mytransport.sg/ltaodataservice.svc/SMRTInfoSet";
         $this->base_url['bus_stops']              = "http://datamall.mytransport.sg/ltaodataservice.svc/BusStopCodeSet";
         $this->base_url['taxi_availability']      = "http://datamall2.mytransport.sg/ltaodataservice/TaxiAvailability";
         $this->base_url['carpark_availability']   = "http://datamall.mytransport.sg/ltaodataservice.svc/CarParkSet";
@@ -150,8 +150,6 @@ class Lta
             $type
         );
 
-        // dd ($request);
-
         $response = $this->http_client->send($request);
         return $response->getBody();
     }
@@ -159,7 +157,7 @@ class Lta
     /**
      * return busRouteSBS in Json format
      * @param  int $page        $page number, 1 page = 50 records, first page = 0
-     * @return json encoded $object
+     * @return json $object
      */
     public function busRouteSBSJson($page = 0)
     {
@@ -175,6 +173,155 @@ class Lta
     {
         return simplexml_load_string(
             $this->busRouteSBS($page, "xml")->getContents()
+        );
+    }
+
+    /**
+     * Lists information for each bus stop along bus routes operated by SMRT,
+     * including Bus Stop code, first and last bus absolute arrival times.
+     * if the bus is wheel-chair accessible (WAB).
+     * @param  int $page        $page number, 1 page = 50 records, first page = 0
+     * @param  string $type     response format, json or xml
+     * @return Psr\Http\Message\StreamInterface $bodyObject
+     */
+    public function busRouteSMRT($page, $type = 'json')
+    {
+        if (!is_numeric($page)) {
+            $page=0;
+        }
+
+        $skip = $page * 50;
+
+        $request = $this->prepare_request(
+            'bus_routes_smrt',
+            [
+                '$skip' => $skip,
+            ],
+            $type
+        );
+
+        $response = $this->http_client->send($request);
+        return $response->getBody();
+    }
+
+    /**
+     * return busRouteSMRT in Json format
+     * @param  int $page        $page number, 1 page = 50 records, first page = 0
+     * @return json $object
+     */
+    public function busRouteSMRTJson($page = 0)
+    {
+        return $this->busRouteSMRT($page, "json")->getContents();
+    }
+
+    /**
+     * return busRouteSMRT in XML format
+     * @param  int $page        $page number, 1 page = 50 records, first page = 0
+     * @return simpleXML $object
+     */
+    public function busRouteSMRTXml($page = 0)
+    {
+        return simplexml_load_string(
+            $this->busRouteSMRT($page, "xml")->getContents()
+        );
+    }
+
+
+    /**
+     * Lists information for bus services operated by SBS Transit, including:
+     * start and stop locations, and frequency of dispatches for peak and nonpeak
+     * hours in the mornings (AM) and evenings (PM).
+     * @param  int $page        $page number, 1 page = 50 records, first page = 0
+     * @param  string $type     response format, json or xml
+     * @return Psr\Http\Message\StreamInterface $bodyObject
+     */
+    public function busInfoSBS($page, $type = 'json')
+    {
+        if (!is_numeric($page)) {
+            $page=0;
+        }
+
+        $skip = $page * 50;
+
+        $request = $this->prepare_request(
+            'bus_info_sbs',
+            [
+                '$skip' => $skip,
+            ],
+            $type
+        );
+
+        $response = $this->http_client->send($request);
+        return $response->getBody();
+    }
+
+    /**
+     * return busInfoSBS in Json format
+     * @param  int $page        $page number, 1 page = 50 records, first page = 0
+     * @return json $object
+     */
+    public function busInfoSBSJson($page = 0)
+    {
+        return $this->busInfoSBS($page, "json")->getContents();
+    }
+
+    /**
+     * return busInfoSBS in XML format
+     * @param  int $page        $page number, 1 page = 50 records, first page = 0
+     * @return simpleXML $object
+     */
+    public function busInfoSBSXml($page = 0)
+    {
+        return simplexml_load_string(
+            $this->busInfoSBS($page, "xml")->getContents()
+        );
+    }
+
+    /**
+     * Lists details for all bus stops in Singapore (code, road, description).
+     * @param  int $page        $page number, 1 page = 50 records, first page = 0
+     * @param  string $type     response format, json or xml
+     * @return Psr\Http\Message\StreamInterface $bodyObject
+     */
+    public function busStop($page, $type = 'json')
+    {
+        if (!is_numeric($page)) {
+            $page=0;
+        }
+
+        $skip = $page * 50;
+
+        $request = $this->prepare_request(
+            'bus_stops',
+            [
+                '$skip' => $skip,
+            ],
+            $type
+        );
+
+        $response = $this->http_client->send($request);
+        return $response->getBody();
+    }
+
+    /**
+     * return busStop in Json format
+     * @param  int $page        $page number, 1 page = 50 records, first page = 0
+     * @return json $object
+     */
+    public function busStopJson($page = 0)
+    {
+        return $this->busStop($page, "json")->getContents();
+    }
+
+    /**
+     * return busStop in XML format
+     * @param  int $page        $page number, 1 page = 50 records, first page = 0
+     * @return simpleXML $object
+     */
+    public function busStopXml($page = 0)
+    {
+        return simplexml_load_string(
+            $this->busStop($page, "xml")->getContents()
         );
     }
 }
